@@ -42,25 +42,39 @@ public class grabber : MonoBehaviour
         // You can adjust this duration to make the transition slower or faster
         float duration = 1f / AnimationSpeed;
 
-        // Smoothly slide from the hit point to the shelf position
-        while (timeElapsed < duration)
+        while (Mathf.Abs(ClosedBook.transform.position.x - ClosedPos.x) > 0.01f)
         {
-            while(ClosedBook.transform.position.x != ClosedPos.x)
-            {
-                float newX = Mathf.Lerp(startPosition.x, ClosedPos.x, timeElapsed / duration);
-                ClosedBook.transform.position = new Vector2(newX, ClosedPos.y);
-            }
-            while(ClosedBook.transform.position.y != ClosedPos.y)
-            {
-                float newY = Mathf.Lerp(startPosition.y, ClosedPos.y, timeElapsed / duration);
-                ClosedBook.transform.position = new Vector2(ClosedPos.x, newY);
-            }
+            float newX = Mathf.Lerp(startPosition.x, ClosedPos.x, timeElapsed / duration);
+            ClosedBook.transform.position = new Vector2(newX, startPosition.y);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        timeElapsed = 0f;
+        while (Mathf.Abs(ClosedBook.transform.position.y - ClosedPos.y) > 0.01f)
+        {
+            
+            float newY = Mathf.Lerp(startPosition.y, ClosedPos.y, timeElapsed / duration);
+            ClosedBook.transform.position = new Vector2(ClosedPos.x, newY);
             timeElapsed += Time.deltaTime;
             yield return null; // Wait for the next frame
         }
+        // Smoothly slide from the hit point to the shelf position
+        while (timeElapsed < duration)
+        {
+
+            
+
+            
+
+           
+            
+            
+            
+            
+        }
 
         // Ensure it snaps perfectly to the final destination at the end
-        ClosedBook.transform.position = ClosedPos;
+        //ClosedBook.transform.position = ClosedPos;
     }
 
 }

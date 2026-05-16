@@ -565,7 +565,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d8cb0cf0bec069438260e153692e9fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ClosedPos: {x: -1.791665, y: 0.6647705}
+  ClosedPos: {x: -2.23, y: 0.6647705}
   ClosedBook: {fileID: 2056942007}
   AnimationSpeed: 5
 --- !u!1 &619394800

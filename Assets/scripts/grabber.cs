@@ -24,30 +24,33 @@ public class grabber : MonoBehaviour
         colliderRef.size = new Vector2(OpenColliderXScale, OpenColliderYScale);
 
     }
-    private void OnTriggerStay2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject == Book)
         {
-            Vector2 HitPoint = other.ClosestPoint(transform.position);
+            Vector2 HitPoint = other.ClosestPoint(transform.position); // finds point of trigger
             Debug.Log(" the closesest point is " + HitPoint);
-            colliderRef = other.GetComponent<BoxCollider2D>();
-            colliderRef.size = new Vector2(ClosedColliderXScale, ClosedColliderYScale);
             SpriteRenderer sr = other.gameObject.GetComponent<SpriteRenderer>();
-            sr.sprite = ClosedSprite;
-            StartCoroutine(AnimateBookToShelf(HitPoint));
+            StartCoroutine(SetColliderSize(ClosedColliderXScale, ClosedColliderYScale));
+            sr.sprite = ClosedSprite; // changes sprite
+            StartCoroutine(AnimateBookToShelf(HitPoint)); // animates
+            
            
 
         }
     }
     private void OnTriggerExit2D(Collider2D other)
     {
+        if (!Application.isPlaying) return;
         if (other.gameObject== Book)
         {
             
             Debug.Log("left");
-            Book.SetActive(false);
-            Vector2 HitPoint = other.ClosestPoint(transform.position);
-            
+            SpriteRenderer sr = other.gameObject.GetComponent<SpriteRenderer>();
+           
+            sr.sprite = OpenSprite; // changes sprite
+            //Vector2 HitPoint = other.ClosestPoint(transform.position);
+            StartCoroutine(SetColliderSize(OpenColliderXScale, OpenColliderYScale));
             //OpenedBook.SetActive(true);
 
 
@@ -90,7 +93,14 @@ public class grabber : MonoBehaviour
         // Ensure it snaps perfectly to the final destination at the end
         //Book.transform.position = ClosedPos;
     }
-    public void SwapSprites()
+    private IEnumerator SetColliderSize(float xSize, float ySize)
+    {
+        yield return new WaitForSeconds(1f);
+        colliderRef = Book.GetComponent<BoxCollider2D>();
+        colliderRef.size = new Vector2(xSize, ySize); // scales to new collider size
+        
+    }
+    public void SwapSprites() // for changing collider size visually
     {
         if (Book.GetComponent<SpriteRenderer>().sprite == OpenSprite)
         {

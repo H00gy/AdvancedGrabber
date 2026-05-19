@@ -40,9 +40,9 @@ public class grabber : MonoBehaviour
 
         float timeElapsed = 0f;
         // You can adjust this duration to make the transition slower or faster
-        float duration = 1f / AnimationSpeed;
+        float duration = AnimationSpeed/2f; // divide by 2 to split phases
 
-        while (Mathf.Abs(ClosedBook.transform.position.x - ClosedPos.x) > 0.01f)
+        while (timeElapsed<duration) // moves X (Note to self, always use timeElapsed<duration)
         {
             float newX = Mathf.Lerp(startPosition.x, ClosedPos.x, timeElapsed / duration);
             ClosedBook.transform.position = new Vector2(newX, startPosition.y);
@@ -50,7 +50,7 @@ public class grabber : MonoBehaviour
             yield return null;
         }
         timeElapsed = 0f;
-        while (Mathf.Abs(ClosedBook.transform.position.y - ClosedPos.y) > 0.01f)
+        while (timeElapsed < duration) // moves Y
         {
             
             float newY = Mathf.Lerp(startPosition.y, ClosedPos.y, timeElapsed / duration);
@@ -58,20 +58,7 @@ public class grabber : MonoBehaviour
             timeElapsed += Time.deltaTime;
             yield return null; // Wait for the next frame
         }
-        // Smoothly slide from the hit point to the shelf position
-        while (timeElapsed < duration)
-        {
-
-            
-
-            
-
-           
-            
-            
-            
-            
-        }
+        
 
         // Ensure it snaps perfectly to the final destination at the end
         //ClosedBook.transform.position = ClosedPos;

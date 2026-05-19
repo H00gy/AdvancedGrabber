@@ -11,21 +11,26 @@ public class grabber : MonoBehaviour
     public Sprite ClosedSprite;
 
     public float AnimationSpeed = 5f;
+    //
     private BoxCollider2D colliderRef;
     public float OpenColliderXScale;
     public float OpenColliderYScale;
     public float ClosedColliderXScale;
     public float ClosedColliderYScale;
+    //
     private void Start()
     {
         //Book.SetActive(false);
         Book.transform.position = new Vector2(0, 0);
+        //
         colliderRef = Book.GetComponent<BoxCollider2D>();
         colliderRef.size = new Vector2(OpenColliderXScale, OpenColliderYScale);
+        //
 
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (!Application.isPlaying) return;
         if (other.gameObject == Book)
         {
             Vector2 HitPoint = other.ClosestPoint(transform.position); // finds point of trigger
@@ -64,6 +69,7 @@ public class grabber : MonoBehaviour
     }
     private IEnumerator AnimateBookToShelf(Vector2 startPosition)
     {
+
         // Place the closed book exactly where the collision happened and turn it on
         Book.transform.position = startPosition;
         Book.SetActive(true);

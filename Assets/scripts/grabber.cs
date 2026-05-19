@@ -5,21 +5,35 @@ using System.Collections;
 public class grabber : MonoBehaviour
 {
     public Vector2 ClosedPos;
-    public GameObject ClosedBook;
+    public GameObject Book;
+    //public GameObject OpenedBook;
+    public Sprite OpenSprite;
+    public Sprite ClosedSprite;
+
     public float AnimationSpeed = 5f;
+    private BoxCollider2D colliderRef;
+    public float OpenColliderXScale;
+    public float OpenColliderYScale;
+    public float ClosedColliderXScale;
+    public float ClosedColliderYScale;
     private void Start()
     {
-        ClosedBook.SetActive(false);
-        
+        //Book.SetActive(false);
+        Book.transform.position = new Vector2(0, 0);
+        colliderRef = Book.GetComponent<BoxCollider2D>();
+        colliderRef.size = new Vector2(OpenColliderXScale, OpenColliderYScale);
 
     }
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerStay2D(Collider2D other)
     {
-        if (other.gameObject.tag == "manual")
+        if (other.gameObject == Book)
         {
             Vector2 HitPoint = other.ClosestPoint(transform.position);
             Debug.Log(" the closesest point is " + HitPoint);
-            other.gameObject.SetActive(false);
+            colliderRef = other.GetComponent<BoxCollider2D>();
+            colliderRef.size = new Vector2(ClosedColliderXScale, ClosedColliderYScale);
+            SpriteRenderer sr = other.gameObject.GetComponent<SpriteRenderer>();
+            sr.sprite = ClosedSprite;
             StartCoroutine(AnimateBookToShelf(HitPoint));
            
 
@@ -27,16 +41,29 @@ public class grabber : MonoBehaviour
     }
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject== ClosedBook)
+        if (other.gameObject== Book)
         {
+            
             Debug.Log("left");
+            Book.SetActive(false);
+            Vector2 HitPoint = other.ClosestPoint(transform.position);
+            
+            //OpenedBook.SetActive(true);
+
+
+
         }
+    }
+    private void ColliderRef(bool state)
+    {
+        colliderRef = GetComponent<BoxCollider2D>();
+        colliderRef.enabled = state;
     }
     private IEnumerator AnimateBookToShelf(Vector2 startPosition)
     {
         // Place the closed book exactly where the collision happened and turn it on
-        ClosedBook.transform.position = startPosition;
-        ClosedBook.SetActive(true);
+        Book.transform.position = startPosition;
+        Book.SetActive(true);
 
         float timeElapsed = 0f;
         // You can adjust this duration to make the transition slower or faster
@@ -45,7 +72,7 @@ public class grabber : MonoBehaviour
         while (timeElapsed<duration) // moves X (Note to self, always use timeElapsed<duration)
         {
             float newX = Mathf.Lerp(startPosition.x, ClosedPos.x, timeElapsed / duration);
-            ClosedBook.transform.position = new Vector2(newX, startPosition.y);
+            Book.transform.position = new Vector2(newX, startPosition.y);
             timeElapsed += Time.deltaTime;
             yield return null;
         }
@@ -54,14 +81,25 @@ public class grabber : MonoBehaviour
         {
             
             float newY = Mathf.Lerp(startPosition.y, ClosedPos.y, timeElapsed / duration);
-            ClosedBook.transform.position = new Vector2(ClosedPos.x, newY);
+            Book.transform.position = new Vector2(ClosedPos.x, newY);
             timeElapsed += Time.deltaTime;
             yield return null; // Wait for the next frame
         }
         
 
         // Ensure it snaps perfectly to the final destination at the end
-        //ClosedBook.transform.position = ClosedPos;
+        //Book.transform.position = ClosedPos;
+    }
+    public void SwapSprites()
+    {
+        if (Book.GetComponent<SpriteRenderer>().sprite == OpenSprite)
+        {
+            Book.GetComponent<SpriteRenderer>().sprite = ClosedSprite;
+        }
+        else
+        {
+            Book.GetComponent<SpriteRenderer>().sprite = OpenSprite;
+        }
     }
 
 }

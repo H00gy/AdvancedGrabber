@@ -12,7 +12,7 @@ public class grabber : MonoBehaviour
 
     public float AnimationSpeed = 5f;
     //
-    private BoxCollider2D colliderRef;
+    //private BoxCollider2D colliderRef;
     public float OpenColliderXScale;
     public float OpenColliderYScale;
     public float ClosedColliderXScale;
@@ -24,8 +24,8 @@ public class grabber : MonoBehaviour
         //Book.SetActive(false);
         Book.transform.position = new Vector2(0, 0);
         //
-        colliderRef = Book.GetComponent<BoxCollider2D>();
-        colliderRef.size = new Vector2(OpenColliderXScale, OpenColliderYScale);
+        //colliderRef = Book.GetComponent<BoxCollider2D>();
+        Book.GetComponent<BoxCollider2D>().size = new Vector2(OpenColliderXScale, OpenColliderYScale);
         //
 
     }
@@ -37,7 +37,7 @@ public class grabber : MonoBehaviour
             Vector2 HitPoint = other.ClosestPoint(transform.position); // finds point of trigger
             Debug.Log(" the closesest point is " + HitPoint);
             SpriteRenderer sr = other.gameObject.GetComponent<SpriteRenderer>();
-            StartCoroutine(SetColliderSize(ClosedColliderXScale, ClosedColliderYScale));
+            StartCoroutine(SetColliderSize(Book.GetComponent<BoxCollider2D>(),ClosedColliderXScale, ClosedColliderYScale));
             sr.sprite = ClosedSprite; // changes sprite
             StartCoroutine(AnimateBookToShelf(HitPoint)); // animates
             
@@ -56,18 +56,14 @@ public class grabber : MonoBehaviour
            
             sr.sprite = OpenSprite; // changes sprite
             //Vector2 HitPoint = other.ClosestPoint(transform.position);
-            StartCoroutine(SetColliderSize(OpenColliderXScale, OpenColliderYScale));
+            StartCoroutine(SetColliderSize(Book.GetComponent<BoxCollider2D>(),OpenColliderXScale, OpenColliderYScale));
             //OpenedBook.SetActive(true);
 
 
 
         }
     }
-    private void ColliderRef(bool state)
-    {
-        colliderRef = GetComponent<BoxCollider2D>();
-        colliderRef.enabled = state;
-    }
+   
     private IEnumerator AnimateBookToShelf(Vector2 startPosition)
     {
 
@@ -100,7 +96,7 @@ public class grabber : MonoBehaviour
         // Ensure it snaps perfectly to the final destination at the end
         //Book.transform.position = ClosedPos;
     }
-    private IEnumerator SetColliderSize(float xSize, float ySize)
+    private IEnumerator SetColliderSize(BoxCollider2D colliderRef, float xSize, float ySize)
     {
         if (!Application.isPlaying) yield return null;
         yield return new WaitForSeconds(ColliderScaleSeconds);

@@ -17,6 +17,7 @@ public class grabber : MonoBehaviour
     public float OpenColliderYScale;
     public float ClosedColliderXScale;
     public float ClosedColliderYScale;
+    public float ColliderScaleSeconds;
     //
     private void Start()
     {
@@ -75,7 +76,7 @@ public class grabber : MonoBehaviour
         Book.SetActive(true);
 
         float timeElapsed = 0f;
-        // You can adjust this duration to make the transition slower or faster
+        // slower or faster transition
         float duration = AnimationSpeed/2f; // divide by 2 to split phases
 
         while (timeElapsed<duration) // moves X (Note to self, always use timeElapsed<duration)
@@ -101,7 +102,8 @@ public class grabber : MonoBehaviour
     }
     private IEnumerator SetColliderSize(float xSize, float ySize)
     {
-        yield return new WaitForSeconds(1f);
+        if (!Application.isPlaying) yield return null;
+        yield return new WaitForSeconds(ColliderScaleSeconds);
         colliderRef = Book.GetComponent<BoxCollider2D>();
         colliderRef.size = new Vector2(xSize, ySize); // scales to new collider size
         
